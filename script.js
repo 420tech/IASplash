@@ -108,7 +108,7 @@ document.getElementById('waitlistForm').addEventListener('submit', function(e) {
         console.log('Waitlist signup:', formData);
         
         // Show success message
-        alert(`Thank you, ${formData.firstName}! You've been added to the AccellRator waitlist. We'll be in touch soon!`);
+        alert(`Thank you, ${formData.firstName}! You've been added to the AcelRater waitlist. We'll be in touch soon!`);
         
         // Reset form
         document.getElementById('waitlistForm').reset();
