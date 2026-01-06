@@ -69,21 +69,27 @@ function scrollToFeatures() {
     });
 }
 
-// Waitlist form submission
+// Waitlist form submission with Formspree
 document.getElementById('waitlistForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Get form data
+    // Get form data for validation
     const formData = {
         firstName: document.getElementById('firstName').value,
         lastName: document.getElementById('lastName').value,
+        agencyName: document.getElementById('agencyName').value,
+        address: document.getElementById('address').value,
+        city: document.getElementById('city').value,
+        state: document.getElementById('state').value,
+        zip: document.getElementById('zip').value,
         email: document.getElementById('email').value,
-        company: document.getElementById('company').value,
-        role: document.getElementById('role').value
+        agencySize: document.getElementById('agencySize').value
     };
     
-    // Basic validation
-    if (!formData.firstName || !formData.lastName || !formData.email) {
+    // Basic validation - check all required fields
+    const requiredFields = ['firstName', 'lastName', 'agencyName', 'address', 'city', 'state', 'zip', 'email', 'agencySize'];
+    const emptyFields = requiredFields.filter(field => !formData[field]);
+    
+    if (emptyFields.length > 0) {
+        e.preventDefault();
         alert('Please fill in all required fields.');
         return;
     }
@@ -91,39 +97,34 @@ document.getElementById('waitlistForm').addEventListener('submit', function(e) {
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
+        e.preventDefault();
         alert('Please enter a valid email address.');
         return;
     }
     
-    // Simulate form submission
+    // Zip code validation (basic US format)
+    const zipRegex = /^\d{5}(-\d{4})?$/;
+    if (!zipRegex.test(formData.zip)) {
+        e.preventDefault();
+        alert('Please enter a valid zip code (e.g., 12345 or 12345-6789).');
+        return;
+    }
+    
+    // Show loading state
     const submitButton = document.querySelector('#waitlistForm button');
     const originalText = submitButton.textContent;
     
     submitButton.textContent = 'Joining...';
     submitButton.disabled = true;
     
-    // Simulate API call delay
+    // Reset button after a delay (form will redirect)
     setTimeout(() => {
-        // In a real application, you would send this data to your backend
-        console.log('Waitlist signup:', formData);
-        
-        // Show success message
-        alert(`Thank you, ${formData.firstName}! You've been added to the AcelRater waitlist. We'll be in touch soon!`);
-        
-        // Reset form
-        document.getElementById('waitlistForm').reset();
-        
-        // Close modal
-        closeWaitlistModal();
-        
-        // Reset button
         submitButton.textContent = originalText;
         submitButton.disabled = false;
-        
-        // You could also redirect to a thank you page or show a success modal
-        // window.location.href = '/thank-you';
-        
-    }, 1500);
+    }, 2000);
+    
+    // Form will be submitted to Formspree automatically
+    // No need to prevent default - let it submit normally
 });
 
 // Add some interactive animations
